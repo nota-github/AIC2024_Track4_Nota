@@ -12,7 +12,7 @@ import mmcv
 
 try:
     from sahi.models.mmdet import MmdetDetectionModel
-    from sahi.predict_v2 import get_sliced_prediction
+    from sahi.predict_fisheye import get_sliced_prediction
 
 except ImportError:
     raise ImportError('Please run "pip install -U sahi" '
