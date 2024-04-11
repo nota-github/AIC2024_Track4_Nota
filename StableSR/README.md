@@ -4,6 +4,17 @@
 
 ## Exploiting Diffusion Prior for Real-World Image Super-Resolution
 
+### Setting
+[Dependencies and Installation](#dependencies-and-installation)
+
+### Generating Training Data
+```
+sh gen_training_data.sh
+```
+### Generating Test Data
+```
+sh gen_test_data.sh
+```
 [Paper](https://arxiv.org/abs/2305.07015) | [Project Page](https://iceclear.github.io/projects/stablesr/) | [Video](https://www.youtube.com/watch?v=5MZy9Uhpkw4) | [WebUI](https://github.com/pkuliyi2015/sd-webui-stablesr) | [ModelScope](https://modelscope.cn/models/xhlin129/cv_stablesr_image-super-resolution/summary) | [ComfyUI](https://github.com/gameltb/comfyui-stablesr)
 
 
