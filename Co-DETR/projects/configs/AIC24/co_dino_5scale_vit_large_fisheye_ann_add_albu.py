@@ -1,5 +1,5 @@
 dataset_type = 'Fisheye8klvisDataset'
-data_root = '/home/data/Fisheye8K'
+data_root = 'data/Fisheye8K/'
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -93,18 +93,18 @@ data = dict(
     workers_per_gpu=1,
     train=dict(
         type=dataset_type,
-        ann_file='/home/data/Fisheye8K/train/train_lvis2.json',
-        img_prefix='/home/data/Fisheye8K/train/images/',
+        ann_file='train/train.json',
+        img_prefix='train/images/',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
-        ann_file='/home/data/Fisheye8K/test/test_lvis2.json',
-        img_prefix='/home/data/Fisheye8K/test/images/',
+        ann_file='test/test.json',
+        img_prefix='test/images/',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file='/home/data/Fisheye8K/test/test_lvis2.json',
-        img_prefix='/home/data/Fisheye8K/test/images/',
+        ann_file='test/test.json',
+        img_prefix='test/images/',
         pipeline=test_pipeline))
 evaluation = dict(interval=1, metric='bbox')
 checkpoint_config = dict(interval=1)

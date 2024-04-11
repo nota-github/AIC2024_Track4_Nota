@@ -1,5 +1,5 @@
 dataset_type = 'Fisheye8klvisDataset'
-data_root = '/data/Fisheye8K/'
+data_root = 'data/Fisheye8K/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 albu_train_transforms = [
@@ -103,8 +103,8 @@ data = dict(
     workers_per_gpu=1,
     train=dict(
         type='Fisheye8klvisDataset',
-        ann_file='/data/Fisheye8K/trainval/trainval_lvis.json',
-        img_prefix='/data/Fisheye8K/trainval/images/',
+        ann_file='data/Fisheye8K/train/train_lvis.json',
+        img_prefix='data/Fisheye8K/train/images/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(type='LoadAnnotations', with_bbox=True),
@@ -137,11 +137,11 @@ data = dict(
             dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
         ],
         filter_empty_gt=False,
-        data_root='/data/Fisheye8K/trainval/'),
+        data_root=''),
     val=dict(
         type='Fisheye8klvisDataset',
-        ann_file='/data/Fisheye8K/test/test_lvis.json',
-        img_prefix='/data/Fisheye8K/test/images/',
+        ann_file='data/Fisheye8K/test/test_lvis.json',
+        img_prefix='data/Fisheye8K/test/images/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -161,11 +161,11 @@ data = dict(
                     dict(type='Collect', keys=['img'])
                 ])
         ],
-        data_root='/data/Fisheye8K/test/'),
+        data_root=''),
     test=dict(
         type='Fisheye8klvisDataset',
-        ann_file='/data/Fisheye8K/test/test_lvis.json',
-        img_prefix='/data/Fisheye8K/test/images/',
+        ann_file='data/Fisheye8K/test/test_lvis.json',
+        img_prefix='data/Fisheye8K/test/images/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -185,19 +185,19 @@ data = dict(
                     dict(type='Collect', keys=['img'])
                 ])
         ],
-        data_root='/data/Fisheye8K/test/'))
+        data_root=''))
 evaluation = dict(interval=1, metric='bbox')
 checkpoint_config = dict(interval=1)
 log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
 custom_hooks = [dict(type='NumClassCheckHook')]
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-load_from = '/workspace/co_dino_5scale_swin_large_16e_o365tococo.pth'
+load_from = 'co_dino_5scale_swin_large_16e_o365tococo.pth'
 resume_from = None
 workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
-auto_scale_lr = dict(enable=False, base_batch_size=8)
+auto_scale_lr = dict(enable=False, base_batch_size=1)
 num_dec_layer = 6
 lambda_2 = 2.0
 model = dict(
