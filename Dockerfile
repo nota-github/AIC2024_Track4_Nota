@@ -37,5 +37,3 @@ ENV PYTHONPATH $APP_PATH
 WORKDIR $APP_PATH
 
 COPY . $APP_PATH
-
-#RUN pip install -v -e .
