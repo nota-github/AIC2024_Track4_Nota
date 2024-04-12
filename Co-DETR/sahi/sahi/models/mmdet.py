@@ -43,7 +43,6 @@ class MmdetDetectionModel(DetectionModel):
         """
 
         # create model
-        print("self.dataset", self.dataset)
         if self.dataset == 'fisheye8k':
             model = init_detector(self.config_path, self.model_path, device=self.device, dataset=DatasetEnum.FISHEYE8K)
         elif self.dataset == 'fisheye8klvis':

@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument('--test_dataset_path', default='/data/')
-    parser.add_argument('--target_json_dir', default='/data/ensenble_dir')
+    parser.add_argument('--target_json_dir', default='/data/ensemble_dir')
     parser.add_argument('--out_name', default='')
     parser.add_argument('--iou_thr', default=0.4)
     args = parser.parse_args()
@@ -22,7 +22,6 @@ def xywh2xyxy(bbox, shape):
             min(1., (bbox[2] + bbox[0]) / shape[1]),
             min(1., (bbox[3] + bbox[1]) / shape[0]),
         ]
-
 
 def xyxy2xywh(bbox, shape):
         _bbox = bbox.tolist()

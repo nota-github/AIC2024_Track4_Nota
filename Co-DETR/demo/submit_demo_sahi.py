@@ -9,6 +9,7 @@ from mmdet.apis import (async_inference_detector, init_detector, show_result_pyp
 from projects import *
 from mmdet.core import DatasetEnum
 import mmcv
+import cv2
 
 try:
     from sahi.models.mmdet import MmdetDetectionModel
@@ -27,8 +28,6 @@ def parse_args():
     parser.add_argument('--out-file', default=None, help='Path to output file')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference')
-    parser.add_argument('--fold', default=5)
-    parser.add_argument('--n_fold', default=0)
     parser.add_argument(
         '--palette',
         default='random',
@@ -93,6 +92,12 @@ def parse_args():
         type=int,
         default=2,
         help='Super resolution scale')
+    parser.add_argument(
+        '--use_hist_equal',
+        type=bool,
+        default=False,
+        help='Whether to use histogram equalization')
+        
     args = parser.parse_args()
     return args
 
@@ -123,6 +128,12 @@ def xywh2xyxy(bbox):
             bbox[3] + bbox[1],
         ]
 
+def apply_histogram_equalization(image):
+    ycrcb_img = cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)
+    ycrcb_img[:, :, 0] = cv2.equalizeHist(ycrcb_img[:, :, 0])
+    image = cv2.cvtColor(ycrcb_img, cv2.COLOR_YCrCb2BGR)
+    return image
+
 def main(args):
     # build the model from a config file and a checkpoint file
     if args.dataset == 'coco':
@@ -132,7 +143,6 @@ def main(args):
     else:
         model = init_detector(args.config, args.checkpoint, device=args.device, dataset=DatasetEnum.FISHEYE8KLVIS)
     # test a single image
-    print("args.dataset", args.dataset)
     sahi_model = MmdetDetectionModel(
         model_path=args.checkpoint,
         config_path=args.config,
@@ -142,20 +152,14 @@ def main(args):
     sahi_model.confidence_threshold = args.score_thr
     json_results = []
     input_images_path = glob.glob(os.path.join(args.dir, '*.png'))
-    fold = int(args.fold)
-    n_fold = int(args.n_fold)
-    if fold > 0:
-        size = len(input_images_path)//fold
-        if n_fold == (fold-1):
-            input_fold = input_images_path[n_fold * size:]
-        else:
-            input_fold = input_images_path[n_fold * size: (n_fold+1) * size]
 
-    for file in mmcv.track_iter_progress(input_fold):
+    for file in mmcv.track_iter_progress(input_images_path):
         img_name = file.split('/')[-1]
         imgid = get_image_Id(img_name)
         img = mmcv.imread(file)
-        fime_name = img_name.split('.')[0]
+        if args.use_hist_equal:
+            img = apply_histogram_equalization(img)
+
 
         # arrange slices
         height, width = img.shape[:2]
@@ -227,7 +231,7 @@ def main(args):
                 score_thr=args.score_thr,
                 out_file=os.path.join(args.out_file, img_name))
         
-    with open(f'{args.out_file}/{n_fold}_{fold}.json', 'w') as f:
+    with open(f'{args.out_file}/submit.json', 'w') as f:
         json.dump(json_results, f)
 
 async def async_main(args):
