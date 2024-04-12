@@ -52,7 +52,7 @@ AIC2024_Track4_Nota
 
 
 ## Inference
-Download checkpoints from the drive.
+Download checkpoints from the googledrive. 
 - ViT-l backbone [download](https://drive.google.com/file/d/1gL7q5Cr-_4ZbVJrw4YUu3BAr4AFpNgHE/view?usp=drive_link)
 ```
 # Co-DINO (ViT-L) + SAHI
@@ -61,8 +61,10 @@ python demo/submit_demo_sahi.py data/aicity_images \
     co_dino_vit_l_fisheye8k_base.pth \
     --out-file output \
     --device cuda:0 \
-    --dataset fisheye8k
+    --dataset fisheye8k \ 
+    --use_hist_equal {True or False}
 ```
+
 - ViT-l backbone + basic augmentation [download](https://drive.google.com/file/d/1v2N76F2nUiK3CItmbsdilTqg1JGsWIwx/view?usp=drive_link)
 ```
 # Co-DINO (ViT-L) + basic augmentation + SAHI
@@ -71,7 +73,8 @@ python demo/submit_demo_sahi.py data/aicity_images \
     co_dino_vit_l_fisheye8k_basic_aug.pth \
     --out-file output \
     --device cuda:0 \
-    --dataset fisheye8k
+    --dataset fisheye8k \
+    --use_hist_equal {True or False}
 ```
 - ViT-l backbone + rotation augmentation [download](https://drive.google.com/file/d/1Oc9E_YYY4EZ-85PbiTsB_7nB8lIehcbi/view?usp=drive_link)
 ```
@@ -81,7 +84,8 @@ python demo/submit_demo_sahi.py data/aicity_images \
     co_dino_vit_l_fisheye8k_rotate.pth \
     --out-file output_rotate \
     --device cuda:0 \
-    --dataset fisheye8k
+    --dataset fisheye8k \ 
+    --use_hist_equal {True or False}
 ```
 - Swin backbone + semi-supervision [download](https://drive.google.com/file/d/1msSj_hFMcLZ_e2JJEKQyB9F6wP5tSAZU/view?usp=drive_link)
 ```
@@ -91,7 +95,8 @@ python demo/submit_demo_sahi.py data/aicity_images \
     co_dino_swin_l_fisheye8k_lvis.pth \
     --out-file output_lvis \
     --device cuda:0 \
-    --dataset fisheye8klvis
+    --dataset fisheye8klvis \ 
+    --use_hist_equal {True or False}
 ```
 - ViT-l backbone + SR [download]()
 ```
@@ -102,23 +107,25 @@ python demo/submit_demo_sahi.py data/aicity_images \
     --out-file output_sr \
     --device cuda:0 \
     --dataset fisheye8klvis
+    --use_hist_equal False
 ```
-- Histogram equalization
-```
-python demo/submit_demo_sahi.py data/aicity_images \ 
-    projects/configs/AIC24/co_dino_swin_fisheye8k_lvis_add_ann.py \
-    co_dino_vit_l_fisheye8k_sr.pth \
-    --out-file output_sr \
-    --device cuda:0 \
-    --dataset fisheye8klvis \
-    --use_hist_equal True
-```
+
 ## Ensemble
-- We use weighted boxes fusion(WBF) for ensemble.
+- We use weighted boxes fusion(WBF) for ensemble. And We ensembled a total of 9 output json files.
+    - Co-DINO (ViT-L) + SAHI
+    - Co-DINO (ViT-L) + basic augmentation + SAHI
+    - Co-DINO (ViT-L) + image rotation + SAHI
+    - Co-DINO (Swin-L) + image rotation + semi-supervision + SAHI
+    - Co-DINO (ViT-L) + SAHI + histogram equalization
+    - Co-DINO (ViT-L) + basic augmentation + SAHI + histogram equalization
+    - Co-DINO (ViT-L) + image rotation + SAHI + histogram equalization
+    - Co-DINO (Swin-L) + image rotation + semi-supervision + SAHI + histogram equalization
+    - Co-DINO (ViT-L) + SR + SAHI
+
 ```
 python ensemble.py 
     --test_dataset_path data/aicity_images \
-    --target_json_dir path_to_json_dir
+    --target_json_dir path_to_json_dir # The path of the dir containing the above 9 output json files is
     --out_name ensemble.json \
     --iou_thr 0.4
 ```
