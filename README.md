@@ -21,7 +21,7 @@ cd Co-DETR
 pip install -v -e .
 pip install fvcore einops albumentations
 cd sahi
-pip install -e ."[dev]”
+pip install -e ."[dev]” # Refer to the original repo
 ```
 
 ## Prepare Datasets
@@ -58,7 +58,7 @@ Download checkpoints from the googledrive.
 # Co-DINO (ViT-L) + SAHI
 python demo/submit_demo_sahi.py data/aicity_images \ 
     projects/configs/AIC24/co_dino_5scale_vit_large_fisheye.py \
-    co_dino_vit_l_fisheye8k_base.pth \
+    co_dino_5scale_vit_large_fisheye.pth \
     --out-file output \
     --device cuda:0 \
     --dataset fisheye8k \ 
@@ -70,7 +70,7 @@ python demo/submit_demo_sahi.py data/aicity_images \
 # Co-DINO (ViT-L) + basic augmentation + SAHI
 python demo/submit_demo_sahi.py data/aicity_images \ 
     projects/configs/AIC24/co_dino_5scale_vit_large_fisheye_basic_aug.py \
-    co_dino_vit_l_fisheye8k_basic_aug.pth \
+    co_dino_5scale_vit_large_fisheye_basic_aug.pth \
     --out-file output \
     --device cuda:0 \
     --dataset fisheye8k \
@@ -81,7 +81,7 @@ python demo/submit_demo_sahi.py data/aicity_images \
 # Co-DINO (ViT-L) + image rotation + SAHI
 python demo/submit_demo_sahi.py data/aicity_images \ 
     projects/configs/AIC24/co_dino_5scale_vit_large_fisheye_rotate.py \
-    co_dino_vit_l_fisheye8k_rotate.pth \
+    co_dino_5scale_vit_large_fisheye_rotate.pth \
     --out-file output_rotate \
     --device cuda:0 \
     --dataset fisheye8k \ 
@@ -92,7 +92,7 @@ python demo/submit_demo_sahi.py data/aicity_images \
 # Co-DINO (Swin-L) + image rotation + semi-supervision + SAHI
 python demo/submit_demo_sahi.py data/aicity_images \ 
     projects/configs/AIC24/co_dino_swin_fisheye8k_lvis_add_ann.py \
-    co_dino_swin_l_fisheye8k_lvis.pth \
+    co_dino_swin_fisheye8k_lvis_add_ann.pth \
     --out-file output_lvis \
     --device cuda:0 \
     --dataset fisheye8klvis \ 
@@ -103,10 +103,11 @@ python demo/submit_demo_sahi.py data/aicity_images \
 # Co-DINO (ViT-L) + SR + SAHI
 python demo/submit_demo_sahi.py data/aicity_images \ 
     projects/configs/AIC24/co_dino_5scale_vit_large_fisheye_sr.py \
-    co_dino_vit_l_fisheye8k_sr.pth \
+    co_dino_5scale_vit_large_fisheye_sr.pth \
     --out-file output_sr \
     --device cuda:0 \
-    --dataset fisheye8klvis
+    --dataset fisheye8k
+    --use_super_resolution True
     --use_hist_equal False
 ```
 
@@ -130,6 +131,8 @@ python ensemble.py
     --iou_thr 0.4
 ```
 ## Training
+- Prepare pre-trained checkpoint from original Co-DETR repository.
+    - For Co-DETR with ViT-Large checkpoint, refer to [this](https://github.com/Sense-X/Co-DETR/blob/main/docs/en/sota_release.md)
 - Modify the config file and enter the appropriate dataset path (refer to [MMDetection's official instructions](https://mmdetection.readthedocs.io/en/latest/user_guides/tracking_config.html#learn-about-configs)).
 ```
 bash tools/dist_train.sh \
@@ -141,7 +144,7 @@ bash tools/dist_train.sh \
 bash tools/dist_train.sh \
     projects/configs/AIC24/co_dino_5scale_vit_large_fisheye.py \
     8 \
-    work_dirs/vit_lvis
+    work_dirs/vit_l
 ```
 
 ### Super Resolution

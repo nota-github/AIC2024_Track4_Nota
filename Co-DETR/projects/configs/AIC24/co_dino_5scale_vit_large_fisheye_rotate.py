@@ -1,4 +1,4 @@
-dataset_type = 'Fisheye8klvisDataset'
+dataset_type = 'Fisheye8kDataset'
 data_root = 'data/Fisheye8K/'
 
 img_norm_cfg = dict(
@@ -81,8 +81,8 @@ test_pipeline = [
         transforms=[
             dict(type='Resize', keep_ratio=True),
             dict(type='RandomFlip'),
+            dict(type='Pad', size=image_size, pad_val=dict(img=(114, 114, 114))),
             dict(type='Normalize', **img_norm_cfg),
-            dict(type='Pad', size_divisor=32),
             dict(type='ImageToTensor', keys=['img']),
             dict(type='Collect', keys=['img'])
         ])
@@ -93,18 +93,18 @@ data = dict(
     workers_per_gpu=1,
     train=dict(
         type=dataset_type,
-        ann_file='train/train.json',
-        img_prefix='train/images/',
+        ann_file=data_root + 'train/train_aicity.json',
+        img_prefix=data_root + 'train/images/',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
-        ann_file='test/test.json',
-        img_prefix='test/images/',
+        ann_file=data_root + 'test/test_aicity.json',
+        img_prefix=data_root + 'test/images/',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file='test/test.json',
-        img_prefix='test/images/',
+        ann_file=data_root + 'test/test_aicity.json',
+        img_prefix=data_root + 'test/images/',
         pipeline=test_pipeline))
 evaluation = dict(interval=1, metric='bbox')
 checkpoint_config = dict(interval=1)
@@ -172,7 +172,7 @@ model = dict(
     query_head=dict(
         type='CoDINOHead',
         num_query=900,
-        num_classes=326,
+        num_classes=5,
         num_feature_levels=5,
         in_channels=2048,
         sync_cls_avg_factor=True,
@@ -247,7 +247,7 @@ model = dict(
             in_channels=256,
             fc_out_channels=1024,
             roi_feat_size=7,
-            num_classes=326,
+            num_classes=5,
             bbox_coder=dict(
                 type='DeltaXYWHBBoxCoder',
                 target_means=[0., 0., 0., 0.],
@@ -259,7 +259,7 @@ model = dict(
             loss_bbox=dict(type='GIoULoss', loss_weight=10.0*num_dec_layer*lambda_2)))],
     bbox_head=[dict(
         type='CoATSSHead',
-        num_classes=326,
+        num_classes=5,
         in_channels=256,
         stacked_convs=1,
         feat_channels=256,
@@ -372,5 +372,5 @@ lr_config = dict(
     warmup_ratio=0.01,
     step=[9, 15])
 optimizer_config = dict(grad_clip=dict(max_norm=0.1, norm_type=2))
-runner = dict(type='EpochBasedRunner', max_epochs=32)
+runner = dict(type='EpochBasedRunner', max_epochs=16)
 
