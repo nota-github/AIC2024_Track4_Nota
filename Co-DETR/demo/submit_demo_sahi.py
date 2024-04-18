@@ -94,10 +94,15 @@ def parse_args():
         help='Super resolution scale')
     parser.add_argument(
         '--use_hist_equal',
-        type=bool,
+        action='store_true',
         default=False,
         help='Whether to use histogram equalization')
-        
+    parser.add_argument(
+        '--aicity_test_images_dir',
+        type=str,
+        default='data/aicity_images',
+        help='Whether to use histogram equalization')
+
     args = parser.parse_args()
     return args
 
@@ -160,7 +165,6 @@ def main(args):
         if args.use_hist_equal:
             img = apply_histogram_equalization(img)
 
-
         # arrange slices
         height, width = img.shape[:2]
         if args.use_super_resolution:
@@ -199,11 +203,11 @@ def main(args):
                 out['bbox'] = [x, y, w, h]
                 mm_result[out['category_id']].append(xywh2xyxy(out['bbox'])+[out['score']])
                 # out['bbox'] = out['bbox'][:4]
-                json_results.append(out)            
+                json_results.append(out)
 
             mm_result = [np.array(bbox_list) if len(bbox_list) > 0 else np.array([[0,0,0,0,0]]) for bbox_list in mm_result]
 
-            test_dir = args.dir
+            test_dir = args.aicity_test_images_dir
             # test_dir = '/home/data/images'
             img_vis = mmcv.imread(os.path.join(test_dir, img_name))
 
@@ -213,7 +217,7 @@ def main(args):
                 mm_result,
                 palette=args.palette,
                 score_thr=args.score_thr,
-                out_file=os.path.join(args.out_file, img_name))                    
+                out_file=os.path.join(args.out_file, img_name))
         elif args.use_super_resolution == False:
             for out in result.to_coco_annotations():
                 out['image_id'] = imgid
@@ -231,8 +235,18 @@ def main(args):
                 score_thr=args.score_thr,
                 out_file=os.path.join(args.out_file, img_name))
         
-    with open(f'{args.out_file}/submit.json', 'w') as f:
+    with open(f'{args.out_file}/submit_{args.out_file}.json', 'w') as f:
         json.dump(json_results, f)
+
+    if args.dataset == 'fisheye8klvis':
+        with open(f'{args.out_file}/submit_{args.out_file}.json', 'r') as f:
+            labels = json.load(f)
+        new_labels = []
+        for label in labels:
+            if label['category_id'] < 5:
+                new_labels.append(label)
+        with open(f'{args.out_file}/submit_{args.out_file}.json', 'w') as f:
+            json.dump(new_labels, f)
 
 async def async_main(args):
     # build the model from a config file and a checkpoint file

@@ -11,7 +11,8 @@ def parse_args():
     parser.add_argument('--test_dataset_path', default='/data/')
     parser.add_argument('--target_json_dir', default='/data/ensemble_dir')
     parser.add_argument('--out_name', default='')
-    parser.add_argument('--iou_thr', default=0.4)
+    parser.add_argument('--iou_thr', type=float, default=0.4)
+    parser.add_argument('--score_thr', type=float, default=0.4)
     args = parser.parse_args()
     return args
 
@@ -47,7 +48,7 @@ def main(args):
             if image_id not in ann_by_img:
                 ann_by_img[image_id] = []
             # sr conf thr 0.6
-            if '54' in path:
+            if '_rotate' in path:
                 if annotation['score'] > 0.6:
                     ann_by_img[image_id].append(annotation)
             else:
@@ -84,8 +85,10 @@ def main(args):
         for box,score,label in zip(bboxes, scores, labels):
             ensenble_anno.append({'image_id': img_id, 'bbox': box, 'score': score, 'category_id':int(label), 'category_name':map_id2name[str(int(label))]})
         
+    filtered_anno = [annotation for annotation in ensenble_anno if annotation['score'] >= args.score_thr]
+
     with open(args.out_name, 'w') as f:
-        json.dump(ensenble_anno, f)
+        json.dump(filtered_anno, f)
 
 if __name__=="__main__":
     args = parse_args()

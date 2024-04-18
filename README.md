@@ -19,9 +19,9 @@ docker run --name aic2024_track4_nota_0 --gpus '"device=0,1,2,3,4,5,6,7"' --shm-
 # Install Co-DETR dependencies
 cd Co-DETR
 pip install -v -e .
-pip install fvcore einops albumentations
+pip install fvcore einops albumentations ensemble_boxes
 cd sahi
-pip install -e ."[dev]” # Refer to the original repo
+pip install -e ."[dev]" # Refer to the original repo
 ```
 
 ## Prepare Datasets
@@ -34,6 +34,7 @@ AIC2024_Track4_Nota
     |── Co-DETR
         |──	data
            |──	aicity_images
+           |──	aicity_images_sr # 2.0x upscaled AICITY test images(using SR)
            |──	Fisheye8K
                 |──	test
                 |   |── images
@@ -74,7 +75,7 @@ python demo/submit_demo_sahi.py data/aicity_images \
     --out-file output \
     --device cuda:0 \
     --dataset fisheye8k \
-    --use_hist_equal {True or False}
+    {--use_hist_equal} # If use histogram equalization
 ```
 - ViT-l backbone + rotation augmentation [download](https://drive.google.com/file/d/1Oc9E_YYY4EZ-85PbiTsB_7nB8lIehcbi/view?usp=drive_link)
 ```
@@ -85,7 +86,7 @@ python demo/submit_demo_sahi.py data/aicity_images \
     --out-file output_rotate \
     --device cuda:0 \
     --dataset fisheye8k \ 
-    --use_hist_equal {True or False}
+    {--use_hist_equal} # If use histogram equalization
 ```
 - Swin backbone + semi-supervision [download](https://drive.google.com/file/d/1msSj_hFMcLZ_e2JJEKQyB9F6wP5tSAZU/view?usp=drive_link)
 ```
@@ -96,19 +97,19 @@ python demo/submit_demo_sahi.py data/aicity_images \
     --out-file output_lvis \
     --device cuda:0 \
     --dataset fisheye8klvis \ 
-    --use_hist_equal {True or False}
+    {--use_hist_equal} # If use histogram equalization
 ```
 - ViT-l backbone + SR [download]()
 ```
 # Co-DINO (ViT-L) + SR + SAHI
-python demo/submit_demo_sahi.py data/aicity_images \ 
+python demo/submit_demo_sahi.py data/aicity_images_sr \ 
     projects/configs/AIC24/co_dino_5scale_vit_large_fisheye_sr.py \
     co_dino_5scale_vit_large_fisheye_sr.pth \
     --out-file output_sr \
     --device cuda:0 \
-    --dataset fisheye8k
-    --use_super_resolution True
-    --use_hist_equal False
+    --dataset fisheye8k \
+    --use_super_resolution True \
+    --aicity_test_images_dir data/aicity_images
 ```
 
 ## Ensemble
@@ -128,7 +129,8 @@ python ensemble.py
     --test_dataset_path data/aicity_images \
     --target_json_dir path_to_json_dir # The path of the dir containing the above 9 output json files is
     --out_name ensemble.json \
-    --iou_thr 0.4
+    --iou_thr 0.4 \
+    --score_thr 0.4    
 ```
 ## Training
 - Prepare pre-trained checkpoint from original Co-DETR repository.
