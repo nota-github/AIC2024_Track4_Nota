@@ -62,8 +62,17 @@ python demo/submit_demo_sahi.py data/aicity_images \
     co_dino_5scale_vit_large_fisheye.pth \
     --out-file output \
     --device cuda:0 \
+    --dataset fisheye8k 
+
+# Co-DINO (ViT-L) + SAHI + histogram equalization
+python demo/submit_demo_sahi.py data/aicity_images \ 
+    projects/configs/AIC24/co_dino_5scale_vit_large_fisheye.py \
+    co_dino_5scale_vit_large_fisheye.pth \
+    --out-file output \
+    --device cuda:0 \
     --dataset fisheye8k \ 
-    --use_hist_equal {True or False}
+    --use_hist_equal \ 
+    --score-thr 0.3
 ```
 
 - ViT-l backbone + basic augmentation [download](https://drive.google.com/file/d/1v2N76F2nUiK3CItmbsdilTqg1JGsWIwx/view?usp=drive_link)
@@ -74,8 +83,16 @@ python demo/submit_demo_sahi.py data/aicity_images \
     co_dino_5scale_vit_large_fisheye_basic_aug.pth \
     --out-file output \
     --device cuda:0 \
+    --dataset fisheye8k
+
+# Co-DINO (ViT-L) + basic augmentation + SAHI + histogram equalization
+python demo/submit_demo_sahi.py data/aicity_images \ 
+    projects/configs/AIC24/co_dino_5scale_vit_large_fisheye_basic_aug.py \
+    co_dino_5scale_vit_large_fisheye_basic_aug.pth \
+    --out-file output \
+    --device cuda:0 \
     --dataset fisheye8k \
-    {--use_hist_equal} # If use histogram equalization
+    --use_hist_equal
 ```
 - ViT-l backbone + rotation augmentation [download](https://drive.google.com/file/d/1Oc9E_YYY4EZ-85PbiTsB_7nB8lIehcbi/view?usp=drive_link)
 ```
@@ -86,7 +103,17 @@ python demo/submit_demo_sahi.py data/aicity_images \
     --out-file output_rotate \
     --device cuda:0 \
     --dataset fisheye8k \ 
-    {--use_hist_equal} # If use histogram equalization
+    --score-thr 0.6
+
+# Co-DINO (ViT-L) + image rotation + SAHI + histogram equalization
+python demo/submit_demo_sahi.py data/aicity_images \ 
+    projects/configs/AIC24/co_dino_5scale_vit_large_fisheye_rotate.py \
+    co_dino_5scale_vit_large_fisheye_rotate.pth \
+    --out-file output_rotate \
+    --device cuda:0 \
+    --dataset fisheye8k \ 
+    --use_hist_equal \ 
+    --score-thr 0.6
 ```
 - Swin backbone + semi-supervision [download](https://drive.google.com/file/d/1msSj_hFMcLZ_e2JJEKQyB9F6wP5tSAZU/view?usp=drive_link)
 ```
@@ -96,10 +123,18 @@ python demo/submit_demo_sahi.py data/aicity_images \
     co_dino_swin_fisheye8k_lvis_add_ann.pth \
     --out-file output_lvis \
     --device cuda:0 \
+    --dataset fisheye8klvis 
+
+# Co-DINO (Swin-L) + image rotation + semi-supervision + SAHI + histogram equalization
+python demo/submit_demo_sahi.py data/aicity_images \ 
+    projects/configs/AIC24/co_dino_swin_fisheye8k_lvis_add_ann.py \
+    co_dino_swin_fisheye8k_lvis_add_ann.pth \
+    --out-file output_lvis \
+    --device cuda:0 \
     --dataset fisheye8klvis \ 
-    {--use_hist_equal} # If use histogram equalization
+    --use_hist_equal
 ```
-- ViT-l backbone + SR [download]()
+- ViT-l backbone + SR [download](https://drive.google.com/file/d/1NFntaHABr82D0dxChdKPPtt782isHwjM/view?usp=drive_link)
 ```
 # Co-DINO (ViT-L) + SR + SAHI
 python demo/submit_demo_sahi.py data/aicity_images_sr \ 
@@ -130,7 +165,7 @@ python ensemble.py
     --target_json_dir path_to_json_dir # The path of the dir containing the above 9 output json files is
     --out_name ensemble.json \
     --iou_thr 0.4 \
-    --score_thr 0.4    
+    --score_thr 0.4
 ```
 ## Training
 - Prepare pre-trained checkpoint from original Co-DETR repository.

@@ -47,12 +47,7 @@ def main(args):
             image_id = annotation['image_id']
             if image_id not in ann_by_img:
                 ann_by_img[image_id] = []
-            # sr conf thr 0.6
-            if '_rotate' in path:
-                if annotation['score'] > 0.6:
-                    ann_by_img[image_id].append(annotation)
-            else:
-                ann_by_img[image_id].append(annotation)
+            ann_by_img[image_id].append(annotation)
         ann_by_img_s.append(ann_by_img)
 
     image_list = list((set(list(map(lambda x: x['image_id'], coco)))))
