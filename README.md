@@ -211,3 +211,10 @@ bash tools/dist_train.sh \
 
 # Acknowledgement
 - This project is based on [Co-DETR](https://github.com/Sense-X/Co-DETR.git) and [StableSR](https://github.com/IceClear/StableSR).
+- 
+# Terms of use
+The model published in this repository was developed by combining several modules (e.g., object detector, super resolution model). Commercial use of any modifications, additions, or newly trained parameters made to combine these modules is not allowed. However, commercial use of the unmodified modules is allowed under their respective licenses. If you wish to use the individual modules commercially, you may refer to their original repositories and licenses provided below.
+
+Object detector (license) link : [Github](https://github.com/Sense-X/Co-DETR), [License](https://github.com/Sense-X/Co-DETR?tab=MIT-1-ov-file#readme)
+
+Super resolution model (license) link : [Github](https://github.com/IceClear/StableSR), [License](https://github.com/IceClear/StableSR?tab=License-1-ov-file#readme)
